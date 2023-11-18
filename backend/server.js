@@ -7,6 +7,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 require('./app/routes/user.routes')(app)
+require('./app/routes/account.routes')(app)
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
