@@ -29,8 +29,6 @@ export default async function Home ({
   const res: Chapter = response.data
   const index = res.chapterIndex
   const total = res.totalChapters
-  console.log(total)
-  console.log(index)
 
   const formattedContent = res.chapter.content
     .split('\n')

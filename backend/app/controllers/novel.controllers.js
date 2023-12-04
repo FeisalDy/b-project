@@ -169,10 +169,10 @@ exports.addChapter = async (req, res) => {
     let chapters = []
 
     while (start < lines.length) {
-      const chapterContent = lines.slice(start, end).join('\n')
+      const chapterContent = lines.slice(start, end).join('\n\n')
 
       const newChapter = {
-        name: `Chapter ${chapters.length + 1}`,
+        name: `Section ${chapters.length + 1}`,
         content: chapterContent
       }
 
