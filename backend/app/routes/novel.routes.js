@@ -20,7 +20,7 @@ module.exports = app => {
   router.get('/:novelId', novel.getNovel)
   router.get('/:novelId/chapters/:chapterIndex', novel.getChapter)
   router.get('/:novelId/chapters', novel.getAllChapters)
-  router.post('/add', novel.addNovel)
+  router.post('/add', upload.single('file'), novel.addNovel)
   router.post('/addChapter/:novelId', upload.single('file'), novel.addChapter)
 
   app.use('/api/novel', router)

@@ -1,6 +1,52 @@
 const db = require('../models')
 const fs = require('fs')
 const Novel = db.novel
+const { BlobServiceClient } = require('@azure/storage-blob')
+
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING
+)
+const containerClient = blobServiceClient.getContainerClient(
+  process.env.CONTAINER_NAME
+)
+console.log('containerClient', containerClient)
+
+// Create the container if it doesn't exist
+async function createContainerIfNotExists () {
+  try {
+    const containerExists = await containerClient.exists()
+    if (!containerExists) {
+      await containerClient.create()
+      console.log(`Container '${CONTAINER_NAME}' created.`)
+    }
+  } catch (error) {
+    console.error('Error while creating container:', error)
+    throw error
+  }
+}
+
+// Call the function to create the container before uploading files
+
+const uploadToAzure = async file => {
+  createContainerIfNotExists()
+
+  try {
+    const blobName = `novelImages/${file.originalname}`
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName)
+
+    // Read the file from the path and upload it
+    const fileStream = fs.createReadStream(file.path)
+    await blockBlobClient.uploadStream(fileStream, file.size)
+
+    // Cleanup: Delete the temporary file after upload
+    fs.unlinkSync(file.path)
+
+    return blobName // Return the path or blob URL
+  } catch (error) {
+    console.error('Error while uploading to Azure:', error)
+    throw error
+  }
+}
 
 // Get all novels
 exports.getAllNovels = async (req, res) => {
@@ -122,13 +168,25 @@ exports.getChapter = async (req, res) => {
 // Add Novel
 exports.addNovel = async (req, res) => {
   try {
-    if (!req.body.name || !req.body.synopsis) {
-      return res
-        .status(400)
-        .send({ message: 'Name and synopsis are required!' })
+    // if (!req.body.name || !req.body.synopsis) {
+    //   return res
+    //     .status(400)
+    //     .send({ message: 'Name and synopsis are required!' })
+    // }
+    // if (!req.file) {
+    //   return res.status(400).send({ message: 'Please upload a valid file' })
+    // }
+
+    let imagePath = ''
+
+    if (req.file) {
+      imagePath = await uploadToAzure(req.file)
+    } else {
+      return res.status(400).send({ message: 'Please upload a valid file' })
     }
 
     const novel = new Novel({
+      image: imagePath,
       name: req.body.name,
       synopsis: req.body.synopsis,
       chapters: req.body.chapters || []

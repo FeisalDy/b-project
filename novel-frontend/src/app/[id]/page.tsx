@@ -9,6 +9,7 @@ import {
 import { Axios } from '@/lib/axios'
 import { Novel } from '@/models/novel'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function Home ({ params }: { params: { id: string } }) {
   const response = await Axios.get(`/${params.id}`)

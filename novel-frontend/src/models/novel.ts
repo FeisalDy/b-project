@@ -1,5 +1,6 @@
 export type Novel = {
   _id: string
+  image?: string
   name: string
   synopsis: string
   chapters?: {

@@ -7,6 +7,7 @@ import {
   CardHeader
 } from '@/components/ui/card'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function Home () {
   const projection = 'false'
@@ -29,6 +30,21 @@ export default async function Home () {
                 {novel.name}
               </CardHeader>
               <CardContent className='px-2 md:px-6'>
+                {novel.image ? (
+                  <Image
+                    src={`${process.env.BLOB_URL}${novel.image}`}
+                    alt={novel.name}
+                    height={200}
+                    width={150}
+                  />
+                ) : (
+                  <Image
+                    src='https://demofree.sirv.com/nope-not-here.jpg'
+                    alt='Default'
+                    height={200}
+                    width={150}
+                  />
+                )}
                 <CardDescription className='text-sm line-clamp-5 md:line-clamp-6'>
                   {novel.synopsis}
                 </CardDescription>

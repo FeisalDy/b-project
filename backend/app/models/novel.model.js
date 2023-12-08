@@ -1,8 +1,11 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema({
+    image: {
+      type: String
+    },
     name: {
-      type: String,
-      required: [true, 'Name is required']
+      type: String
+      //   required: [true, 'Name is required']
     },
     synopsis: {
       type: String
