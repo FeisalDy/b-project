@@ -1,11 +1,6 @@
 import { Axios } from '@/lib/axios'
 import { Novel } from '@/models/novel'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader
-} from '@/components/ui/card'
+import { AspectRatio } from '@/components/ui/aspect-ratio'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -21,38 +16,44 @@ export default async function Home () {
   const res: Novel[] = response.data.novels
 
   return (
-    <div className='m-2'>
-      <Card className='grid grid-cols-2 gap-4 border-none bg-none shadow-none'>
-        {res.map(novel => (
-          <Link key={novel._id} href={`/${novel._id}`}>
-            <Card className='h-36 md:h-64'>
-              <CardHeader className='p-2 md:px-6 truncate'>
+    <div className='grid grid-cols-2 gap-4 my-4'>
+      {res.map(novel => (
+        <Link key={novel._id} href={`/${novel._id}`}>
+          <div className='flex flex-row gap-2 hover:scale-105 transition-transform duration-300 ease-in-out'>
+            <div className='basis-1/4 relative overflow-hidden'>
+              <AspectRatio ratio={2 / 3}>
+                <div className='group w-full h-full'>
+                  {novel.image ? (
+                    <Image
+                      src={`${process.env.BLOB_URL}${novel.image}`}
+                      alt={novel.name}
+                      className='rounded-md object-cover group-hover:scale-110 transition-transform duration-300 ease-in-out'
+                      layout='fill'
+                      fill
+                    />
+                  ) : (
+                    <Image
+                      src='https://demofree.sirv.com/nope-not-here.jpg'
+                      alt='Default'
+                      className='rounded-md object-cover group-hover:scale-110 transition-transform duration-300 ease-in-out'
+                      layout='fill'
+                      fill
+                    />
+                  )}
+                </div>
+              </AspectRatio>
+            </div>
+            <div className='basis-3/4'>
+              <div className='line-clamp-2 transition-all duration-300 ease-in-out group-hover:text-xl'>
                 {novel.name}
-              </CardHeader>
-              <CardContent className='px-2 md:px-6'>
-                {novel.image ? (
-                  <Image
-                    src={`${process.env.BLOB_URL}${novel.image}`}
-                    alt={novel.name}
-                    height={200}
-                    width={150}
-                  />
-                ) : (
-                  <Image
-                    src='https://demofree.sirv.com/nope-not-here.jpg'
-                    alt='Default'
-                    height={200}
-                    width={150}
-                  />
-                )}
-                <CardDescription className='text-sm line-clamp-5 md:line-clamp-6'>
-                  {novel.synopsis}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </Card>
+              </div>
+              <div className='line-clamp-4 text-sm transition-all duration-300 ease-in-out group-hover:text-lg'>
+                {novel.synopsis}
+              </div>
+            </div>
+          </div>
+        </Link>
+      ))}
     </div>
   )
 }

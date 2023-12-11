@@ -9,7 +9,6 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
 const containerClient = blobServiceClient.getContainerClient(
   process.env.CONTAINER_NAME
 )
-console.log('containerClient', containerClient)
 
 // Create the container if it doesn't exist
 async function createContainerIfNotExists () {
@@ -17,10 +16,8 @@ async function createContainerIfNotExists () {
     const containerExists = await containerClient.exists()
     if (!containerExists) {
       await containerClient.create()
-      console.log(`Container '${CONTAINER_NAME}' created.`)
     }
   } catch (error) {
-    console.error('Error while creating container:', error)
     throw error
   }
 }
